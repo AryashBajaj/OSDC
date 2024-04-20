@@ -16,7 +16,6 @@ from comm.serializers import ServerSerializer, ChannelSerializer, MessageSeriali
 class ServerList(APIView) :
 
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get(self, request) :
         servers = request.user.server_set.all()
@@ -40,7 +39,6 @@ class ServerSearchView(APIView) :
     
 class ServerUpdateView(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get_object(self, sid) :
         try :
@@ -60,7 +58,6 @@ class ServerUpdateView(APIView) :
        
 class ChannelList(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get(self, request, sid) :
         channels = Channel.objects.filter(inServer = sid)
@@ -81,7 +78,6 @@ class ChannelList(APIView) :
     
 class ChanneLDetailView(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication]
 
     def get_object(self, cid) :
         try :
@@ -103,12 +99,11 @@ class ChanneLDetailView(APIView) :
         channel = self.get_object(cid)
         if channel is not None :
             channel.delete()
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_404_NOT_FOUND)
     
 class MessageList(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get(self, request, cid) :
         messages = Message.objects.filter(inChannel=cid)
@@ -129,7 +124,6 @@ class MessageList(APIView) :
     
 class MessageDetail(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get_object(self, mid) :
         try :
@@ -151,7 +145,7 @@ class MessageDetail(APIView) :
         message = self.get_object(mid)
         if message is not None :
             message.delete()
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status==status.HTTP_404_NOT_FOUND)
     
 

@@ -3,7 +3,6 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import authenticate, login, logout
 from forum.models import CustomUser, Question, Answer
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework import status, generics
 from rest_framework.views import APIView
@@ -14,26 +13,6 @@ class CreateUserView(generics.ListCreateAPIView) :
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
-class LoginView(APIView) :
-    permission_classes = [AllowAny]
-    def post(self, request) :
-        username = request.data.get('username')
-        password = request.data.get('password')
-        print(username, password)
-        user = authenticate(username=username, password=password)
-        if user is not None :
-            login(request, user)
-            return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-    
-class LogoutView(APIView) :
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-
-    def post(self, request) :
-        logout(request)
-        return Response(status=status.HTTP_200_OK)
-
 class QuestionList(APIView) :
     permission_classes = [AllowAny]
 
@@ -41,10 +20,17 @@ class QuestionList(APIView) :
         questions = Question.objects.all().order_by("-upvotes").order_by("-created_at")
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request) :
+        query = request.data.get('query')
+        if query is None :
+            query = ""
+        questions = Question.objects.filter(title__contains=query).order_by("-upvotes").order_by("-created_at")
+        serializer = QuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class QuestionCreateView(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def post(self, request) :
         serializer = QuestionSerializer(data=request.data)
@@ -55,7 +41,6 @@ class QuestionCreateView(APIView) :
     
 class QuestionDetailView(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get_object(self, qid):
         try:
@@ -90,7 +75,6 @@ class QuestionDetailView(APIView) :
 
 class AnswerList(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get(self, request, qid) :
         question = None
@@ -116,7 +100,6 @@ class AnswerList(APIView) :
     
 class AnswerDetailView(APIView) :
     permission_classes = [IsAuthenticated]
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
         
     def get_answer(self, aid) :
         try :
