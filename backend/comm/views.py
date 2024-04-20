@@ -63,14 +63,19 @@ class ChannelList(APIView) :
     authentication_classes = [SessionAuthentication, BasicAuthentication]
 
     def get(self, request, sid) :
-        channels = channels.objects.filter(inServer = sid)
+        channels = Channel.objects.filter(inServer = sid)
         serializer = ChannelSerializer(channels, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request, sid) :
+        server = None
+        try :
+            server = Server.objects.get(id = 1)
+        except Server.DoesNotExist :
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ChannelSerializer(data=request.data)
         if serializer.is_valid() :
-            serializer.save(inServer = sid)
+            serializer.save(inServer = server)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -111,9 +116,14 @@ class MessageList(APIView) :
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request, cid) :
+        channel = None
+        try :
+            channel = Channel.objects.get(id = cid)
+        except Channel.DoesNotExist :
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = MessageSerializer(data = request.data)
         if serializer.is_valid() :
-            serializer.save(author=request.user, inChannel = cid)
+            serializer.save(author=request.user, inChannel = channel)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

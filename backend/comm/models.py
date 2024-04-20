@@ -16,6 +16,6 @@ class Channel(models.Model) :
 
 class Message(models.Model) :
     content = models.TextField(max_length = 1000)
-    inChannnel = models.ForeignKey(Channel, related_name="messages", on_delete=models.CASCADE)
+    inChannel = models.ForeignKey(Channel, related_name="messages", on_delete=models.CASCADE)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     img = models.ImageField(upload_to="mpics/", blank=True)

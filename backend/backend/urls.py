@@ -24,5 +24,6 @@ urlpatterns = [
     path('forum/', include('forum.urls')),
     path('user/register/', views.CreateUserView.as_view(), name="register"),
     path('login/', views.LoginView.as_view(), name="login"),
-    path('logout/', views.LogoutView.as_view(), name="logout")
+    path('logout/', views.LogoutView.as_view(), name="logout"),
+    path('server/', include('comm.urls')),
 ]
