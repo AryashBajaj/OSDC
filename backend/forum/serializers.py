@@ -15,13 +15,13 @@ class UserSerializer(serializers.ModelSerializer) :
 class QuestionSerializer(serializers.ModelSerializer) :
     class Meta :
         model = Question
-        fields = ["id", "title", "content", "created_at", "author", "img", "upvotes"]
+        fields = ["id", "title", "content", "created_at", "author", "img", "upvoted"]
         extra_kwargs = {"author" : {"read_only" : True}}
 
 class AnswerSerializer(serializers.ModelSerializer) :
     class Meta :
         model = Answer
-        fields = ["id", "content", "created_at", "author", "answer_to", "upvotes"]
+        fields = ["id", "content", "created_at", "author", "answer_to", "upvoted"]
         extra_kwargs = {"author" : {"read_only" : True}, "answer_to" : {"read_only" : True}}
 
 

@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from forum.models import CustomUser, Question, Answer
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework import status, generics
 from rest_framework.views import APIView
 from .serializers import UserSerializer, QuestionSerializer, AnswerSerializer
@@ -13,11 +14,54 @@ class CreateUserView(generics.ListCreateAPIView) :
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+class UserDetail(APIView) :
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, uid) :
+        try :
+            return CustomUser.objects.get(id = uid)
+        except CustomUser.DoesNotExist :
+            return None
+
+    def get(self, request, uid) :
+        user = self.get_object(uid)
+        if user is not None :
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+class Upvote(APIView) :
+    permission_classes = [IsAuthenticated]
+
+    def get_answer(self, aid) :
+        try :
+            return Answer.objects.get(id = aid)
+        except Answer.DoesNotExist :
+            return None
+        
+    def get_user(sef, uid) :
+        try :
+            return CustomUser.objects.get(id = uid)
+        except CustomUser.DoesNotExist :
+            return None
+    
+    def post(self, request, aid, uid) :
+        user = self.get_user(uid)
+        answer = self.get_user(aid)
+        if user is not None and answer is not None :
+            user.credit += 1
+            answer.upvoted = True
+            user.save()
+            answer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 class QuestionList(APIView) :
     permission_classes = [AllowAny]
 
     def get(self, request) :
-        questions = Question.objects.all().order_by("-upvotes").order_by("-created_at")
+        questions = Question.objects.all().order_by("-upvoted").order_by("-created_at")
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -25,7 +69,7 @@ class QuestionList(APIView) :
         query = request.data.get('query')
         if query is None :
             query = ""
-        questions = Question.objects.filter(title__contains=query).order_by("-upvotes").order_by("-created_at")
+        questions = Question.objects.filter(title__contains=query).order_by("-upvoted").order_by("-created_at")
         serializer = QuestionSerializer(questions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

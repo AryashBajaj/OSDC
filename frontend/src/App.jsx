@@ -8,6 +8,8 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Question from "./pages/Question";
 import Forum from "./pages/Forum";
+import Server from "./pages/Server";
+import Channel from "./pages/Channel";
 
 function Logout() {
   localStorage.clear();
@@ -44,6 +46,14 @@ function App() {
         <Route
           path="/Forum/:qid/"
           element={<Question></Question>}
+        />
+        <Route 
+          path="/Server/:sid/channel/"
+          element={<Server></Server>}
+        />
+        <Route 
+          path="Server/channel/:cid/"
+          element={<Channel></Channel>}
         />
         <Route path="*" element={<NotFound></NotFound>} />
       </Routes>

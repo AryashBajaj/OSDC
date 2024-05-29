@@ -20,7 +20,7 @@ class Question(models.Model) :
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     img =  models.ImageField(upload_to='qpics/', blank=True)
-    upvotes = models.IntegerField(default=0)
+    upvoted = models.IntegerField(default=0)
     
     def __str__(self) :
         return self.title + '\n' + self.content
@@ -31,7 +31,7 @@ class Answer(models.Model) :
     content = models.CharField(max_length=100)
     img = models.ImageField(upload_to='apics/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    upvotes = models.IntegerField(default=0)
+    upvoted = models.BooleanField(default=False)
 
     def __str__(self) :
         return self.content

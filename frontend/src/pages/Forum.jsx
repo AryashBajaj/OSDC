@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { QUERY } from "../constants";
 import LoadingIndicator from "../components/LoadingIndicator";
 import api from "../api";
+import QuestionItem from "../components/QuestionItem";
 
 function Forum() {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,12 @@ function Forum() {
     getQuestions();
   }
 
-  <form onSubmit={handleSubmit}>
+  return(
+    <div>
+    {questions.map((question) => {
+      <QuestionItem question={question} key={question.id}/>
+    })}
+    <form onSubmit={handleSubmit}>
     <h1>Search for already asked Questions</h1>
     <input
       className="form-input"
@@ -53,7 +59,9 @@ function Forum() {
     />
     {isLoading && <LoadingIndicator />}
     <button type="submit">Go</button>
-  </form>;
+    </form>
+    </div>
+  );
 }
 
 export default Forum;

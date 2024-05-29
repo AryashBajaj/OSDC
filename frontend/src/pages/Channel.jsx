@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import api from "../api";
 import Message from "../components/Message";
 import "../styles/Home.css"
 
-function Channel({ cid }) {
+function Channel() {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
 
@@ -11,9 +12,11 @@ function Channel({ cid }) {
     getMessages();
   }, []);
 
+  const { cid } = useParams();
+
   const getMessages = () => {
     api
-      .get(`/server/channel/${cid}/message`)
+      .get(`/server/channel/${cid}/message/`)
       .then((res) => res.data)
       .then((data) => {
         setMessages(data);

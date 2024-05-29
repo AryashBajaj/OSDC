@@ -8,5 +8,6 @@ urlpatterns = [
     path('question/<int:qid>/', views.QuestionDetailView.as_view(), name="question-details"),
     path('question/answer/<int:qid>/', views.AnswerList.as_view(), name="answer-list"),
     path('answer/<int:aid>/', views.AnswerDetailView.as_view(), name="answer-details"),
-
+    path('upvote/<int:aid>/<int:uid>/', views.Upvote.as_view(), name="upvote"),
+    path('getUser/<int:uid>', views.UserDetail.as_view(), name="get-user"),
 ]

@@ -37,7 +37,7 @@ class ServerSearchView(APIView) :
         serializer = ServerSerializer(servers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class ServerUpdateView(APIView) :
+class ServerDetailView(APIView) :
     permission_classes = [IsAuthenticated]
 
     def get_object(self, sid) :
@@ -45,6 +45,13 @@ class ServerUpdateView(APIView) :
             return Server.objects.get(id = sid)
         except Server.DoesNotExist :
             return None
+        
+    def get(self, request, sid) :
+        server = self.get_object(sid)
+        if server is not None :
+            serializer = ServerSerializer(server)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
     def put(self, request, sid) :
         server = self.get_object(sid)
         if server is not None :
@@ -85,6 +92,13 @@ class ChanneLDetailView(APIView) :
         except :
             return None
         
+    def get(self, request, cid) :
+        channel = self.get_object(cid)
+        if channel is not None :
+            serializer = ChannelSerializer(channel)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     def put(self, request, cid) :
         channel = self.get_object(cid)
         if channel is not None :

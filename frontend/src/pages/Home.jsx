@@ -1,7 +1,10 @@
 import { react, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, Router, useNavigate,} from "react-router-dom";
 import { QUERY } from "../constants";
+import Navbar from "../components/Navbar";
+import Texttrans from "../components/Texttrans"
 import api from "../api";
+import Logo from "../components/Logo"
 import LoadingIndicator from "../components/LoadingIndicator";
 
 function Home() {
@@ -46,6 +49,43 @@ function Home() {
         { isLoading && <LoadingIndicator />}
         <button type="submit">Go</button>
   </form>
+
+  return(
+    <div>
+      <Navbar title="Synergy"/>
+      <Texttrans/>
+      <div className='mb-3 centerForm' style={{
+        position: 'absolute',
+        top: '600px',
+        left: '400px',
+        transform: 'translate(-50%, -50%)',
+        padding: '8px 12px',
+        border: '2px dashed #aaa',
+        borderRadius: '6px',
+      }}>
+        <form>
+          <div className="form-group">
+            <label htmlFor="exampleFormControlTextarea1"></label>
+            <textarea className="form-control" style={{
+              width: '300px', // Adjust the width as needed
+              height: '70px',
+              border: '2px solid #aaa',
+              borderRadius: '4px',
+              margin: '2px 0',
+              outline: 'none',
+              padding: '2px',
+              boxSizing: 'border-box',
+              transition: '0.3s',
+              resize: 'none',
+              textIndent: '16px',
+              lineHeight: '1.6em'
+            }} placeholder="What is your question ?" id="exampleFormControlTextarea1" rows="3"></textarea>
+          </div>
+        </form>
+        <Logo/>
+      </div>
+    </div>
+  );
 
 }
 
